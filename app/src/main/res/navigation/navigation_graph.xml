@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/navigation_graph"
+    app:startDestination="@id/authFragment">
+
+    <fragment
+        android:id="@+id/authFragment"
+        android:name="com.sharma.notesapp.presentation.fragment.AuthFragment"
+        android:label="AuthFragment" >
+        <action
+            android:id="@+id/action_authFragment_to_notesDisplayFragment"
+            app:destination="@id/notesDisplayFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/notesDisplayFragment"
+        android:name="com.sharma.notesapp.presentation.fragment.NotesDisplayFragment"
+        android:label="NotesDisplayFragment" />
+</navigation>
