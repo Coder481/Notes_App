@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="@dimen/spacing_small"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <EditText
+        android:id="@+id/tv_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/title_text_size"
+        android:inputType="text"
+        tools:hint="Input Title"
+        android:background="@null"
+        android:padding="@dimen/spacing_micro"
+        android:textColor="@color/title_text_color"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <TextView
+        android:id="@+id/tv_due_date"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        tools:text="25/08/2023"
+        android:textSize="@dimen/creation_date_text_size"
+        android:layout_marginTop="@dimen/spacing_micro"
+        android:padding="@dimen/spacing_micro"
+        app:layout_constraintStart_toStartOf="@id/tv_title"
+        app:layout_constraintTop_toBottomOf="@id/tv_title"
+        app:layout_constraintEnd_toEndOf="@id/tv_title"/>
+
+    <EditText
+        android:id="@+id/description_field"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:inputType="textMultiLine"
+        tools:hint="Input Description"
+        android:background="@null"
+        android:gravity="top|start"
+        android:layout_marginVertical="@dimen/spacing_micro"
+        app:layout_constraintStart_toStartOf="@id/tv_title"
+        app:layout_constraintEnd_toEndOf="@id/tv_title"
+        app:layout_constraintTop_toBottomOf="@id/tv_due_date"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

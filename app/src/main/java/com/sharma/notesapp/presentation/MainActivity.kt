@@ -5,6 +5,8 @@ import android.os.Bundle
 import androidx.navigation.fragment.NavHostFragment
 import com.sharma.notesapp.R
 import com.sharma.notesapp.databinding.ActivityMainBinding
+import com.sharma.notesapp.presentation.fragment.AuthFragmentDirections
+import com.sharma.notesapp.presentation.fragment.NotesDisplayFragmentDirections
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -15,8 +17,25 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+    }
 
+    fun performFragmentTransaction(itemId: String) {
 
+        val navHostFragment =
+            supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+
+        navHostFragment.navController
+            .navigate(
+                NotesDisplayFragmentDirections
+                    .actionNotesDisplayFragmentToNoteDetailsFragment(itemId = itemId)
+            )
+
+    }
+
+    fun popBack() {
+        val navHostFragment =
+            supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+        navHostFragment.navController.popBackStack()
     }
 
     fun moveToHome() {

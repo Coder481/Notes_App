@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Notes App</string>
+    <string name="no_todo_items_add_by_clicking_button">No note items found.\nAdd by clicking below button.</string>
+    <string name="loading">Loading data. Please wait!</string>
 </resources>

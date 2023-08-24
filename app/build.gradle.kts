@@ -4,6 +4,7 @@ plugins {
     id("com.google.gms.google-services")
     id("com.google.dagger.hilt.android")
     id("kotlin-kapt")
+    id("androidx.navigation.safeargs.kotlin")
 }
 
 android {
@@ -44,6 +45,7 @@ android {
 dependencies {
 
     val firebase_bom = "32.2.2"
+    val gson = "2.8.7"
     val hilt = "2.47"
     val navigation = "2.7.0"
     val lifecycle = "2.6.1"
@@ -67,6 +69,9 @@ dependencies {
 
     // Lottie
     implementation ("com.airbnb.android:lottie:$lottieVersion")
+
+    // Local
+    implementation ("com.google.code.gson:gson:$gson")
 
     implementation ("androidx.core:core-ktx:1.8.0")
     implementation ("androidx.appcompat:appcompat:1.6.1")
