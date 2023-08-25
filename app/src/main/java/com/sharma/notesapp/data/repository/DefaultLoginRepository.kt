@@ -9,8 +9,8 @@ import com.google.firebase.auth.FirebaseAuthMissingActivityForRecaptchaException
 import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.auth.PhoneAuthOptions
 import com.google.firebase.auth.PhoneAuthProvider
-import com.sharma.notesapp.data.model.FirebaseAuthData
-import com.sharma.notesapp.domain.Resource
+import com.sharma.notesapp.data.local.SharedPreferenceHelper
+import com.sharma.notesapp.domain.model.FirebaseAuthData
 import com.sharma.notesapp.domain.repository.LoginRepository
 import com.sharma.notesapp.domain.resource.AuthResource
 import kotlinx.coroutines.Dispatchers
@@ -24,7 +24,8 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class DefaultLoginRepository @Inject constructor(
-    private val firebaseAuth: FirebaseAuth
+    private val firebaseAuth: FirebaseAuth,
+    private val sharedPreferenceHelper: SharedPreferenceHelper
 ): LoginRepository {
 
     private val TAG = "LoginRepository"
@@ -32,21 +33,14 @@ class DefaultLoginRepository @Inject constructor(
     private val ioDispatcher = Dispatchers.IO
     private lateinit var callbacks: PhoneAuthProvider.OnVerificationStateChangedCallbacks
 
-    override fun sendOtp(phoneNumber: String): Flow<AuthResource<FirebaseAuthData?>> = callbackFlow<AuthResource<FirebaseAuthData?>> {
+    override fun sendOtp(phoneNumber: String, phoneAuthOptions: PhoneAuthOptions.Builder): Flow<AuthResource<FirebaseAuthData?>> = callbackFlow<AuthResource<FirebaseAuthData?>> {
         firebaseAuth.setLanguageCode("en")
 
         trySend(AuthResource.Loading)
-//        emit(Resource.Loading)
 
         callbacks = object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
 
             override fun onVerificationCompleted(credential: PhoneAuthCredential) {
-                // This callback will be invoked in two situations:
-                // 1 - Instant verification. In some cases the phone number can be instantly
-                //     verified without needing to send or enter a verification code.
-                // 2 - Auto-retrieval. On some devices Google Play services can automatically
-                //     detect the incoming verification SMS and perform verification without
-                //     user action.
                 Log.d(TAG, "onVerificationCompleted:$credential")
 
                 // auto fill OTP
@@ -58,77 +52,73 @@ class DefaultLoginRepository @Inject constructor(
                 trySend(AuthResource.Loading)
                 // sign user in and emit success resource
                 runBlocking {
-                    trySend(signInWithPhoneAuthCredential(credential).first())
+                    trySend(signInWithPhoneAuthCredential(credential, phoneNumber).first())
                     close()
                 }
 
             }
 
             override fun onVerificationFailed(e: FirebaseException) {
-                // This callback is invoked in an invalid request for verification is made,
-                // for instance if the the phone number format is not valid.
                 Log.w(TAG, "onVerificationFailed", e)
 
+                var message = ""
                 if (e is FirebaseAuthInvalidCredentialsException) {
-                    // Invalid request
+                    // Invalid credentials
+                    message = "Invalid credentials entered!\nPlease try again with correct data"
                 } else if (e is FirebaseTooManyRequestsException) {
                     // The SMS quota for the project has been exceeded
+                    message = "Too many requests at this time!\nPlease try again after sometime."
                 } else if (e is FirebaseAuthMissingActivityForRecaptchaException) {
                     // reCAPTCHA verification attempted with null Activity
+                    message = "Unknown error!\nPlease try again after sometime."
                 }
 
-                trySend(AuthResource.Failure(e.message ?: ""))
+                trySend(AuthResource.Failure(message))
                 close()
-                // Show a message and update the UI
             }
 
             override fun onCodeSent(
                 verificationId: String,
                 token: PhoneAuthProvider.ForceResendingToken,
             ) {
-                // The SMS verification code has been sent to the provided phone number, we
-                // now need to ask the user to enter the code and then construct a credential
-                // by combining the code with a verification ID.
                 Log.d(TAG, "onCodeSent:$verificationId")
-
-                // Save verification ID and resending token so we can use them later
-//                storedVerificationId = verificationId
-//                resendToken = token
                 trySend(AuthResource.Success(FirebaseAuthData(verificationId, token)))
             }
         }
 
-        val options = PhoneAuthOptions.newBuilder(firebaseAuth)
+        // phoneAuthOptions -> PhoneAuthOptions with activity included used in reCAPTCHA
+        val options = phoneAuthOptions
             .setPhoneNumber(phoneNumber) // Phone number to verify
             .setTimeout(60L, TimeUnit.SECONDS) // Timeout and unit
-//            .setActivity(this) // Activity (for callback binding)
-            .setCallbacks(callbacks) // OnVerificationStateChangedCallbacks
+            .setCallbacks(callbacks)
             .build()
         PhoneAuthProvider.verifyPhoneNumber(options)
 
         awaitClose {  }
     }.flowOn(ioDispatcher)
 
-    override fun verifyPhoneNumber(code: String, firebaseAuthData: FirebaseAuthData)
+    override fun verifyPhoneNumber(code: String, phoneNumber: String, firebaseAuthData: FirebaseAuthData)
     : Flow<AuthResource<FirebaseAuthData?>> = callbackFlow<AuthResource<FirebaseAuthData?>> {
         trySend(AuthResource.Loading)
         val credential = PhoneAuthProvider.getCredential(firebaseAuthData.verificationId, code)
-        trySend(signInWithPhoneAuthCredential(credential).first())
+        trySend(signInWithPhoneAuthCredential(credential, phoneNumber).first())
         awaitClose {  }
     }.flowOn(ioDispatcher)
 
-    private fun signInWithPhoneAuthCredential(credential: PhoneAuthCredential)
+    private fun signInWithPhoneAuthCredential(credential: PhoneAuthCredential, phoneNumber: String)
     : Flow<AuthResource<FirebaseAuthData?>> {
         return callbackFlow<AuthResource<FirebaseAuthData?>> {
 
             firebaseAuth.signInWithCredential(credential)
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
-                        // Sign in success, update UI with the signed-in user's information
+                        // Sign in success
                         Log.d(TAG, "signInWithCredential:success")
 
                         val user = task.result?.user
+                        sharedPreferenceHelper.savePhoneNumber(phoneNumber)
                         trySend(AuthResource.Success(null))
+                        close()
                     } else {
                         // Sign in failed, display a message and update the UI
                         Log.w(TAG, "signInWithCredential:failure", task.exception)
@@ -136,12 +126,12 @@ class DefaultLoginRepository @Inject constructor(
                             // The verification code entered was invalid
                             trySend(AuthResource.Failure("Invalid code entered!"))
                         }
-                        // Update UI
                         else {
                             trySend(
                                 AuthResource.Failure(task.exception?.message ?: "Unknown error")
                             )
                         }
+                        close()
                     }
                 }
 

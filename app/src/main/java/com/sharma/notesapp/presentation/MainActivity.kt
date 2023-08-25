@@ -39,16 +39,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun moveToHome() {
-        val navHostFragment =
-            supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         transactionToHome()
-        navHostFragment.navController.popBackStack(R.id.authFragment, true)
     }
 
     private fun transactionToHome() {
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         navHostFragment.navController
-            .navigate(R.id.notesDisplayFragment)
+            .navigate(AuthFragmentDirections.actionAuthFragmentToNotesDisplayFragment())
     }
 }

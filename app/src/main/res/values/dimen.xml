@@ -4,8 +4,10 @@
     <dimen name="date_text_size">14sp</dimen>
     <dimen name="creation_date_text_size">12sp</dimen>
     <dimen name="description_text_size">18sp</dimen>
+    <dimen name="header_text_size">18sp</dimen>
+    <dimen name="auth_loader_size">32dp</dimen>
 
-    <dimen name="auth_anim_size">400dp</dimen>
+    <dimen name="auth_anim_size">350dp</dimen>
 
     <dimen name="spacing_pico">1dp</dimen>
     <dimen name="spacing_nano">2dp</dimen>

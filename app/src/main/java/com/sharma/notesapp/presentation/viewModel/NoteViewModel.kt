@@ -7,6 +7,7 @@ import com.sharma.notesapp.domain.resource.Resource
 import com.sharma.notesapp.domain.useCase.AddNoteUseCase
 import com.sharma.notesapp.domain.useCase.DeleteNoteUseCase
 import com.sharma.notesapp.domain.useCase.GetAllNotesUseCase
+import com.sharma.notesapp.domain.useCase.GetPhoneNumberUseCase
 import com.sharma.notesapp.domain.useCase.UpdateNoteUseCase
 import com.sharma.notesapp.presentation.mapper.NoteUiState
 import com.sharma.notesapp.presentation.mapper.toUiState
@@ -23,6 +24,7 @@ class NoteViewModel @Inject constructor(
     private val addNoteUseCase: AddNoteUseCase,
     private val updateNoteUseCase: UpdateNoteUseCase,
     private val deleteNoteUseCase: DeleteNoteUseCase,
+    private val getPhoneNumberUseCase: GetPhoneNumberUseCase
 ): ViewModel() {
     private val _uiState = MutableStateFlow<NoteUiState>(NoteUiState.Idle)
     val uiState = _uiState.asStateFlow()
@@ -31,7 +33,8 @@ class NoteViewModel @Inject constructor(
 
     fun getAllNotes() {
         viewModelScope.launch {
-            getAllNotesUseCase().collect{ res ->
+            val phoneNumber = getPhoneNumberUseCase() ?: "0"
+            getAllNotesUseCase(phoneNumber).collect{ res ->
                 if (res is Resource.Success) listOfNotes.addAll(res.data)
                 _uiState.update { res.toUiState() }
             }
@@ -40,7 +43,8 @@ class NoteViewModel @Inject constructor(
 
     fun addNote(note: Note) {
         viewModelScope.launch {
-            addNoteUseCase(note).collect { res ->
+            val phoneNumber = getPhoneNumberUseCase() ?: "0"
+            addNoteUseCase(note, phoneNumber).collect { res ->
                 if (res is Resource.Success) {
                     listOfNotes.add(res.data)
                     _uiState.update { NoteUiState.Success(listOfNotes) }
@@ -54,7 +58,8 @@ class NoteViewModel @Inject constructor(
 
     fun updateNote(note: Note, position: Int) {
         viewModelScope.launch {
-            updateNoteUseCase(note).collect { res ->
+            val phoneNumber = getPhoneNumberUseCase() ?: "0"
+            updateNoteUseCase(note, phoneNumber).collect { res ->
                 if (res is Resource.Success) {
                     listOfNotes.removeAt(position)
                     listOfNotes.add(position, note)
@@ -69,7 +74,8 @@ class NoteViewModel @Inject constructor(
 
     fun deleteNote(note: Note, position: Int) {
         viewModelScope.launch {
-            deleteNoteUseCase(note).collect { res ->
+            val phoneNumber = getPhoneNumberUseCase() ?: "0"
+            deleteNoteUseCase(note, phoneNumber).collect { res ->
                 if (res is Resource.Success) {
                     listOfNotes.removeAt(position)
                     _uiState.update { NoteUiState.Success(listOfNotes) }

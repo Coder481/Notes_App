@@ -1,4 +1,4 @@
-package com.sharma.notesapp.data.model
+package com.sharma.notesapp.domain.model
 
 import com.google.firebase.auth.PhoneAuthProvider
 

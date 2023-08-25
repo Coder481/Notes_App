@@ -24,25 +24,35 @@
 
             <TextView
                 android:id="@+id/tv_title"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 tools:text="Title of the Note"
                 android:textSize="@dimen/title_text_size"
                 android:gravity="start"
                 android:textColor="@color/black"
+                android:layout_marginEnd="@dimen/spacing_small"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/iv1"
                 app:layout_constraintTop_toTopOf="parent"/>
+
+            <ImageView
+                android:id="@+id/iv1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_right_arrow"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="@id/tv_date"/>
 
             <TextView
                 android:id="@+id/tv_date"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 tools:text="23/9/2023"
                 android:textSize="@dimen/date_text_size"
                 android:gravity="start"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintEnd_toEndOf="@id/tv_title"
                 app:layout_constraintTop_toBottomOf="@id/tv_title"/>
 
             <TextView

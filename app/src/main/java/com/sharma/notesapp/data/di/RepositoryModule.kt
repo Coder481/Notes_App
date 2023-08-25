@@ -19,19 +19,19 @@ object RepositoryModule {
 
     @Provides
     fun provideLoginRepository(
-        firebaseAuth: FirebaseAuth
+        firebaseAuth: FirebaseAuth,
+        sharedPreferenceHelper: SharedPreferenceHelper
     ): LoginRepository {
-        return DefaultLoginRepository(firebaseAuth)
+        return DefaultLoginRepository(firebaseAuth, sharedPreferenceHelper)
     }
 
     @Provides
     fun provideRemoteRepository(
         firebaseFireStore: FirebaseFirestore,
-        sharedPreferenceHelper: SharedPreferenceHelper,
         gson: Gson
     ): RemoteRepository {
         return DefaultRemoteRepository(
-            firebaseFireStore, sharedPreferenceHelper, gson
+            firebaseFireStore, gson
         )
     }
 }

@@ -15,18 +15,17 @@ import javax.inject.Inject
 
 class DefaultRemoteRepository @Inject constructor(
     private val firebaseFireStore: FirebaseFirestore,
-    private val sharedPreferenceHelper: SharedPreferenceHelper,
     private val gson: Gson
 ): RemoteRepository {
 
     private val ioDispatcher = Dispatchers.IO
 
-    override fun getAllNotes(): Flow<Resource<List<Note>>> = callbackFlow<Resource<List<Note>>> {
+    override fun getAllNotes(phoneNumber: String): Flow<Resource<List<Note>>> = callbackFlow<Resource<List<Note>>> {
 
         trySend(Resource.Loading)
 
         val list = mutableListOf<Note>()
-        val collection = firebaseFireStore.collection(sharedPreferenceHelper.getPhoneNumber())
+        val collection = firebaseFireStore.collection(phoneNumber)
         collection.get()
             .addOnSuccessListener {
                 it.documents.forEach { document ->
@@ -46,11 +45,11 @@ class DefaultRemoteRepository @Inject constructor(
 
     }.flowOn(ioDispatcher)
 
-    override fun addNote(note: Note): Flow<Resource<Note>> = callbackFlow<Resource<Note>> {
+    override fun addNote(note: Note, phoneNumber: String): Flow<Resource<Note>> = callbackFlow<Resource<Note>> {
 
         trySend(Resource.Loading)
 
-        val collection = firebaseFireStore.collection(sharedPreferenceHelper.getPhoneNumber())
+        val collection = firebaseFireStore.collection(phoneNumber)
         val documentRef = collection.document()
         val newNote = note.copy(id = documentRef.id)
         val json = gson.toJson(newNote)
@@ -65,11 +64,11 @@ class DefaultRemoteRepository @Inject constructor(
         awaitClose {  }
     }.flowOn(ioDispatcher)
 
-    override fun updateNote(note: Note): Flow<Resource<Note>> = callbackFlow<Resource<Note>> {
+    override fun updateNote(note: Note, phoneNumber: String): Flow<Resource<Note>> = callbackFlow<Resource<Note>> {
 
         trySend(Resource.Loading)
 
-        val collection = firebaseFireStore.collection(sharedPreferenceHelper.getPhoneNumber())
+        val collection = firebaseFireStore.collection(phoneNumber)
         val document = collection.document(note.id)
         val json = gson.toJson(note)
         document.update("data", json)
@@ -82,11 +81,11 @@ class DefaultRemoteRepository @Inject constructor(
         awaitClose {  }
     }.flowOn(ioDispatcher)
 
-    override fun deleteNote(note: Note): Flow<Resource<Note>> = callbackFlow<Resource<Note>> {
+    override fun deleteNote(note: Note, phoneNumber: String): Flow<Resource<Note>> = callbackFlow<Resource<Note>> {
 
         trySend(Resource.Loading)
 
-        val collection = firebaseFireStore.collection(sharedPreferenceHelper.getPhoneNumber())
+        val collection = firebaseFireStore.collection(phoneNumber)
         val document = collection.document(note.id)
         document.delete()
             .addOnSuccessListener {

@@ -2,4 +2,24 @@
     <string name="app_name">Notes App</string>
     <string name="no_todo_items_add_by_clicking_button">No note items found.\nAdd by clicking below button.</string>
     <string name="loading">Loading data. Please wait!</string>
+    <string name="write_your_thoughts">Write your thoughts!</string>
+    <string name="enter_otp">Enter OTP</string>
+    <string name="enter_phone_number">Enter Phone Number</string>
+    <string name="enter_phone_number_with_country_code_to_verify">Enter phone number\nwith country code to verify</string>
+    <string name="enter_correct_phone_number">Enter correct phone number</string>
+    <string name="sending_otp_please_wait">Sending OTP. Please wait…</string>
+    <string name="verify">Verify</string>
+    <string name="verifying_otp_please_wait">Verifying OTP. Please wait…</string>
+    <string name="enter_otp_sent_to">Enter OTP sent to %s</string>
+    <string name="enter_valid_code">Enter valid code</string>
+    <string name="send_otp">Send OTP</string>
+    <string name="update">Update</string>
+    <string name="delete">Delete</string>
+    <string name="note_updated_successfully">Note updated successfully</string>
+    <string name="note_deleted_successfully">Note deleted successfully</string>
+    <string name="input_title">Input Title</string>
+    <string name="input_description">Input Description</string>
+    <string name="add_note">Add Note</string>
+    <string name="please_add_title_before_proceeding">Please add title before proceeding</string>
+    <string name="note_added_successfully">Note added successfully</string>
 </resources>

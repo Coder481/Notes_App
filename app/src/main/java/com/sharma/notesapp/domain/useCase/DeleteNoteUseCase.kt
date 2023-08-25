@@ -9,7 +9,10 @@ import javax.inject.Inject
 class DeleteNoteUseCase @Inject constructor(
     private val remoteRepository: RemoteRepository
 ) {
-    suspend operator fun invoke(note: Note): Flow<Resource<Note>> {
-        return remoteRepository.deleteNote(note)
+    operator fun invoke(
+        note: Note,
+        phoneNumber: String
+    ): Flow<Resource<Note>> {
+        return remoteRepository.deleteNote(note, phoneNumber)
     }
 }

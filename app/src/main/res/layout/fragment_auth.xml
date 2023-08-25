@@ -5,49 +5,80 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.airbnb.lottie.LottieAnimationView
-        android:id="@+id/animationView"
-        android:layout_width="@dimen/auth_anim_size"
-        android:layout_height="@dimen/auth_anim_size"
-        app:lottie_rawRes="@raw/animation_auth"
-        app:lottie_autoPlay="true"
-        app:lottie_loop="true"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="none">
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-    <EditText
-        android:id="@+id/editTextPhoneNumber"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        tools:hint="Enter Phone Number"
-        android:inputType="phone"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/animationView"
-        android:layout_marginTop="@dimen/spacing_small"
-        android:layout_marginHorizontal="@dimen/spacing_medium"/>
+            <com.airbnb.lottie.LottieAnimationView
+                android:id="@+id/animationView"
+                android:layout_width="@dimen/auth_anim_size"
+                android:layout_height="@dimen/auth_anim_size"
+                app:lottie_rawRes="@raw/animation_auth"
+                app:lottie_autoPlay="true"
+                app:lottie_loop="true"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"/>
 
-    <EditText
-        android:id="@+id/editTextOTP"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        tools:hint="Enter OTP"
-        android:inputType="number"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextPhoneNumber"
-        android:layout_marginTop="@dimen/spacing_small"
-        android:layout_marginHorizontal="@dimen/spacing_medium"/>
+            <ProgressBar
+                android:id="@+id/loader"
+                android:layout_width="@dimen/auth_loader_size"
+                android:layout_height="@dimen/auth_loader_size"
+                android:visibility="gone"
+                android:layout_marginTop="@dimen/spacing_small"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/animationView"/>
+            <TextView
+                android:id="@+id/loading_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="Enter phone number"
+                android:gravity="center"
+                android:layout_marginTop="@dimen/spacing_micro"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/loader"/>
 
-    <Button
-        android:id="@+id/buttonVerify"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        tools:text="Verify"
-        app:layout_constraintTop_toBottomOf="@+id/editTextOTP"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginTop="@dimen/spacing_small"/>
+            <EditText
+                android:id="@+id/editTextPhoneNumber"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                tools:hint="Enter Phone Number"
+                android:inputType="phone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/loading_text"
+                android:layout_marginTop="@dimen/spacing_small"
+                android:layout_marginHorizontal="@dimen/spacing_medium"/>
+
+            <EditText
+                android:id="@+id/editTextOTP"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                tools:hint="Enter OTP"
+                android:inputType="number"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/editTextPhoneNumber"
+                android:layout_marginTop="@dimen/spacing_small"
+                android:layout_marginHorizontal="@dimen/spacing_medium"/>
+
+            <Button
+                android:id="@+id/buttonVerify"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="Verify"
+                app:layout_constraintTop_toBottomOf="@+id/editTextOTP"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginTop="@dimen/spacing_small"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

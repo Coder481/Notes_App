@@ -8,6 +8,7 @@ import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.navArgs
+import com.sharma.notesapp.R
 import com.sharma.notesapp.databinding.FragmentNoteDetailsBinding
 import com.sharma.notesapp.domain.model.Note
 import com.sharma.notesapp.presentation.helper.DateHelper
@@ -49,7 +50,7 @@ class NoteDetailsFragment: Fragment() {
     private fun setObserver() {
         viewModel.uiState.collectLifeCycleAware(viewLifecycleOwner) { uiState ->
             if (uiState is NoteUiState.Loading) {
-                showHideLoader(true)
+                if (updateClicked) showHideLoader(true)
             }
             if (uiState is NoteUiState.Success) {
                 if (updateClicked) {
@@ -59,7 +60,8 @@ class NoteDetailsFragment: Fragment() {
                 }
             }
             if (uiState is NoteUiState.Failure) {
-                showHideErrorLayout(true, "${uiState.error}\n\nClick to retry...")
+                if (updateClicked)
+                    showHideErrorLayout(true, "${uiState.error}\n\nClick to retry...")
             }
         }
     }
@@ -101,9 +103,9 @@ class NoteDetailsFragment: Fragment() {
             }
         }
         binding.apply {
-            btnUpdateItem.text = "Update"
+            btnUpdateItem.text = getString(R.string.update)
             btnUpdateItem.isEnabled = false
-            btnDeleteItem.text = "Delete"
+            btnDeleteItem.text = getString(R.string.delete)
             btnUpdateItem.setOnClickListener {
                 val position = viewModel.listOfNotes.indexOf(note)
                 val newNote = note.copy(
@@ -112,13 +114,13 @@ class NoteDetailsFragment: Fragment() {
                     dateOfCreation = System.currentTimeMillis()
                 )
                 if (position != -1) {
-                    successMessage = "Note updated successfully"
+                    successMessage = getString(R.string.note_updated_successfully)
                     updateClicked = true
                     viewModel.updateNote(newNote, position)
                 }
             }
             btnDeleteItem.setOnClickListener {
-                successMessage = "Note deleted successfully"
+                successMessage = getString(R.string.note_deleted_successfully)
                 updateClicked = true
                 val position = viewModel.listOfNotes.indexOf(note)
                 viewModel.deleteNote(note, position)
@@ -128,17 +130,17 @@ class NoteDetailsFragment: Fragment() {
 
     private fun setHints() {
         binding.apply {
-            viewItemDetails.tvTitle.hint = "Input Title"
-            viewItemDetails.descriptionField.hint = "Input Description"
+            viewItemDetails.tvTitle.hint = getString(R.string.input_title)
+            viewItemDetails.descriptionField.hint = getString(R.string.input_description)
             viewItemDetails.descriptionField.isFocusable = true
             val date = DateHelper.timeStampToDate(System.currentTimeMillis())
             viewItemDetails.tvDueDate.setDueDateTextWithColor(date)
 
             btnDeleteItem.gone()
-            btnUpdateItem.text = "Add Note"
+            btnUpdateItem.text = getString(R.string.add_note)
             btnUpdateItem.setOnClickListener {
                 if (viewItemDetails.tvTitle.text.toString().isEmpty()) {
-                    showToast("Please add title before proceeding")
+                    showToast(getString(R.string.please_add_title_before_proceeding))
                     return@setOnClickListener
                 }
 
@@ -148,7 +150,7 @@ class NoteDetailsFragment: Fragment() {
                     dateOfCreation = System.currentTimeMillis(),
                     id = ""
                 )
-                successMessage = "Note added successfully"
+                successMessage = getString(R.string.note_added_successfully)
                 updateClicked = true
                 viewModel.addNote(note)
             }

@@ -9,8 +9,8 @@ class SharedPreferenceHelper @Inject constructor(
     fun savePhoneNumber(phoneNumber: String) {
         sharedPreferences.edit().putString(PHONE_NUMBER_KEY, phoneNumber).apply()
     }
-    fun getPhoneNumber(): String {
-        return sharedPreferences.getString(PHONE_NUMBER_KEY, "") ?: ""
+    fun getPhoneNumber(): String? {
+        return sharedPreferences.getString(PHONE_NUMBER_KEY, "")
     }
 
     companion object {

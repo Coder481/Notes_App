@@ -1,6 +1,6 @@
 package com.sharma.notesapp.presentation.mapper
 
-import com.sharma.notesapp.data.model.FirebaseAuthData
+import com.sharma.notesapp.domain.model.FirebaseAuthData
 import com.sharma.notesapp.domain.resource.AuthResource
 
 sealed class AuthUiState {

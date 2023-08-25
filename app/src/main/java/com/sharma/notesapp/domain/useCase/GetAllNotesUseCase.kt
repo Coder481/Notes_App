@@ -9,7 +9,7 @@ import javax.inject.Inject
 class GetAllNotesUseCase @Inject constructor(
     private val remoteRepository: RemoteRepository
 ) {
-    suspend operator fun invoke(): Flow<Resource<List<Note>>> {
-        return remoteRepository.getAllNotes()
+    operator fun invoke(phoneNumber: kotlin.String): Flow<Resource<List<Note>>> {
+        return remoteRepository.getAllNotes(phoneNumber)
     }
 }
