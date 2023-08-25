@@ -1,6 +1,5 @@
 package com.sharma.notesapp.data.repository
 
-import android.util.Log
 import com.google.firebase.FirebaseException
 import com.google.firebase.FirebaseTooManyRequestsException
 import com.google.firebase.auth.FirebaseAuth
@@ -28,8 +27,6 @@ class DefaultLoginRepository @Inject constructor(
     private val sharedPreferenceHelper: SharedPreferenceHelper
 ): LoginRepository {
 
-    private val TAG = "LoginRepository"
-
     private val ioDispatcher = Dispatchers.IO
     private lateinit var callbacks: PhoneAuthProvider.OnVerificationStateChangedCallbacks
 
@@ -41,7 +38,6 @@ class DefaultLoginRepository @Inject constructor(
         callbacks = object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
 
             override fun onVerificationCompleted(credential: PhoneAuthCredential) {
-                Log.d(TAG, "onVerificationCompleted:$credential")
 
                 // auto fill OTP
                 val otp = credential.smsCode
@@ -59,7 +55,6 @@ class DefaultLoginRepository @Inject constructor(
             }
 
             override fun onVerificationFailed(e: FirebaseException) {
-                Log.w(TAG, "onVerificationFailed", e)
 
                 var message = ""
                 if (e is FirebaseAuthInvalidCredentialsException) {
@@ -81,7 +76,6 @@ class DefaultLoginRepository @Inject constructor(
                 verificationId: String,
                 token: PhoneAuthProvider.ForceResendingToken,
             ) {
-                Log.d(TAG, "onCodeSent:$verificationId")
                 trySend(AuthResource.Success(FirebaseAuthData(verificationId, token)))
             }
         }
@@ -113,15 +107,13 @@ class DefaultLoginRepository @Inject constructor(
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
                         // Sign in success
-                        Log.d(TAG, "signInWithCredential:success")
 
                         val user = task.result?.user
                         sharedPreferenceHelper.savePhoneNumber(phoneNumber)
                         trySend(AuthResource.Success(null))
                         close()
                     } else {
-                        // Sign in failed, display a message and update the UI
-                        Log.w(TAG, "signInWithCredential:failure", task.exception)
+                        // Sign in failed
                         if (task.exception is FirebaseAuthInvalidCredentialsException) {
                             // The verification code entered was invalid
                             trySend(AuthResource.Failure("Invalid code entered!"))
