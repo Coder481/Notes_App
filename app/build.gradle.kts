@@ -54,7 +54,7 @@ dependencies {
 
     // Play Integrity
     implementation ("com.google.android.play:integrity:$playIntegrity")
-    implementation ("com.google.android.gms:play-services-auth:20.6.0")
+    implementation ("com.google.android.gms:play-services-auth:20.7.0")
 
     // Firebase
     implementation (platform("com.google.firebase:firebase-bom:$firebaseBom"))
